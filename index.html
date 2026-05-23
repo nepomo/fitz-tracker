@@ -3,16 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
 <title>Fitz Excel Rebuild — Autonomous Tracker</title>
 <meta http-equiv="refresh" content="300">
 <style>
   :root {
     --bg: #0f1115;
     --panel: #161a22;
+    --panel-2: #1c212b;
     --border: #2a2f3a;
     --text: #e8eaed;
     --muted: #8b94a6;
     --accent: #4ade80;
+    --accent-2: #60a5fa;
+    --accent-3: #c084fc;
     --warn: #fbbf24;
     --bad: #f87171;
     --info: #60a5fa;
@@ -20,26 +24,61 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
   body { padding: 24px; max-width: 920px; margin: 0 auto; }
-  header { padding-bottom: 16px; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
-  h1 { margin: 0 0 6px; font-size: 22px; font-weight: 600; }
+
+  /* ---- Gate ---- */
+  #gate { min-height: 80vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .gate-card { width: 100%; max-width: 360px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 32px 28px; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  .gate-card h1 { font-size: 18px; margin: 0 0 6px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 600; }
+  .gate-sub { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+  #pw { width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 14px; margin-bottom: 12px; font-family: inherit; }
+  #pw:focus { outline: 0; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(74,222,128,0.18); }
+  button[type=submit] { width: 100%; padding: 10px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: #0a0e0a; border: 0; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: filter 0.15s; }
+  button[type=submit]:hover { filter: brightness(1.1); }
+  .gate-err { margin-top: 12px; color: var(--bad); font-size: 12px; }
+
+  /* ---- Main content ---- */
+  header { padding-bottom: 16px; border-bottom: 1px solid var(--border); margin-bottom: 24px; position: relative; }
+  header::before { content: ''; position: absolute; top: -28px; left: -24px; right: -24px; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3)); }
+  h1 { margin: 0 0 6px; font-size: 22px; font-weight: 600; background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .subtitle { color: var(--muted); font-size: 13px; }
+
+  /* Progress */
+  .progress-section { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; margin-bottom: 24px; }
+  .progress-section h2 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin: 0 0 12px; }
+  .progress-label { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .progress-label .lhs { color: var(--text); font-size: 14px; }
+  .progress-label .lhs strong { font-size: 22px; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+  .progress-label .rhs { font-size: 18px; font-weight: 600; background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .progress-bar { height: 8px; background: rgba(255,255,255,0.05); border-radius: 999px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 50%, var(--accent-3) 100%); border-radius: 999px; box-shadow: 0 0 12px rgba(96,165,250,0.4); }
+
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
   @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
   .card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
   .card h2 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin: 0 0 12px; }
+  .card.last-close { border-left: 3px solid var(--accent); }
+  .card.next-target { border-left: 3px solid var(--accent-2); }
   .big { font-size: 28px; font-weight: 600; line-height: 1.1; margin-bottom: 6px; }
+  .last-close .big { background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .next-target .big { background: linear-gradient(90deg, var(--accent-2), var(--accent-3)); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .meta { color: var(--muted); font-size: 13px; line-height: 1.5; }
   .meta code { background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 4px; font-size: 12px; }
+
   .stats { display: flex; gap: 24px; margin: 8px 0 16px; }
   .stat { flex: 1; }
   .stat .num { font-size: 22px; font-weight: 600; }
+  .stat:nth-child(1) .num { color: var(--accent); }
+  .stat:nth-child(2) .num { color: var(--accent-2); }
+  .stat:nth-child(3) .num { color: var(--accent-3); }
   .stat .lbl { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+
   .pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
   .pill { padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
   .pill-ok { background: rgba(74,222,128,0.15); color: var(--accent); }
   .pill-idle { background: rgba(139,148,166,0.15); color: var(--muted); }
   .pill-armed { background: rgba(251,191,36,0.18); color: var(--warn); }
   .pill-paused { background: rgba(248,113,113,0.18); color: var(--bad); }
+
   table { width: 100%; border-collapse: collapse; }
   th, td { padding: 8px 10px; text-align: left; font-size: 13px; border-bottom: 1px solid var(--border); }
   th { color: var(--muted); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -54,9 +93,11 @@
   .badge-cap_reached { background: rgba(251,191,36,0.18); color: var(--warn); }
   .badge-failed { background: rgba(248,113,113,0.18); color: var(--bad); }
   .badge-paused { background: rgba(96,165,250,0.18); color: var(--info); }
+
   .engines td { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px; }
   .engines td:first-child { font-family: inherit; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
   .engine-tool { color: var(--muted); font-size: 11px; }
+
   .all-closes-wrap { max-height: 480px; overflow-y: auto; overflow-x: auto; }
   .all-closes-wrap table { min-width: 560px; }
   .all-closes-wrap thead th { position: sticky; top: 0; background: var(--panel); z-index: 1; }
@@ -67,19 +108,43 @@
   .section-expenses { background: rgba(251,191,36,0.18); color: var(--warn); }
   .section-operations { background: rgba(96,165,250,0.18); color: var(--info); }
   .section-unknown { background: rgba(139,148,166,0.15); color: var(--muted); }
+
   footer { color: var(--muted); font-size: 11px; padding-top: 24px; border-top: 1px solid var(--border); margin-top: 24px; }
 </style>
 </head>
 <body>
+
+<div id="gate">
+  <form id="gateForm" class="gate-card">
+    <h1>Fitz Excel Rebuild</h1>
+    <p class="gate-sub">Tracker · enter password</p>
+    <input type="password" id="pw" autocomplete="current-password" autofocus required>
+    <button type="submit">Enter</button>
+    <div id="gate-err" class="gate-err" style="display:none">Incorrect password.</div>
+  </form>
+</div>
+
+<div id="content" hidden>
 
 <header>
   <h1>Fitz Excel Rebuild — Autonomous Tracker</h1>
   <div class="subtitle">Headless WO orchestrator. Updated after each cron firing. Auto-refresh every 5 min.</div>
 </header>
 
+<div class="progress-section">
+  <h2>Spec coverage</h2>
+  <div class="progress-label">
+    <div class="lhs"><strong>282</strong> of 1,596 canonical outputs implemented</div>
+    <div class="rhs">17.7%</div>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" style="width: 17.7%"></div>
+  </div>
+</div>
+
 <div class="grid">
 
-  <div class="card">
+  <div class="card last-close">
     <h2>Last close</h2>
     <div class="big">WO 53</div>
     <div class="meta">
@@ -89,7 +154,7 @@
     </div>
   </div>
 
-  <div class="card">
+  <div class="card next-target">
     <h2>Next target (pre-pinned)</h2>
     <div class="big">WO 54</div>
     <div class="meta">
@@ -110,7 +175,7 @@
     </div>
     <div class="stat">
       <div class="num">53</div>
-      <div class="lbl">Cap (MAX_AUTONOMOUS_WO)</div>
+      <div class="lbl">Cap</div>
     </div>
     <div class="stat">
       <div class="num">1167</div>
@@ -122,7 +187,7 @@
     <span class="pill pill-idle">no kickoff queued</span>
   </div>
   <div class="meta" style="margin-top: 12px;">
-    Next scheduled firing: May 23, 12:13 PM CDT (~6.0h) (launchd, four times daily at 12:13 AM, 6:13 AM, 12:13 PM, 6:13 PM Central)
+    Next scheduled firing: May 23, 12:13 PM CDT (~4.4h) (launchd, four times daily at 12:13 AM, 6:13 AM, 12:13 PM, 6:13 PM Central)
   </div>
 </div>
 
@@ -247,14 +312,14 @@
         <tr><td><strong>WO47</strong></td><td>Water - House</td><td><span class="section-badge section-output">Output</span></td><td class="tests-cell">996</td><td class="ts"><code>46ecbc0</code></td><td class="ts">May 22, 1:15 PM</td></tr>
         <tr><td><strong>WO46</strong></td><td>Electric - Tenant/Vacant</td><td><span class="section-badge section-operations">Operations</span></td><td class="tests-cell">964</td><td class="ts"><code>cfb8b79</code></td><td class="ts">May 22, 12:29 PM</td></tr>
         <tr><td><strong>WO45</strong></td><td>Electric - House</td><td><span class="section-badge section-output">Output</span></td><td class="tests-cell">933</td><td class="ts"><code>8d6beeb</code></td><td class="ts">May 22, 9:53 AM</td></tr>
-        <tr><td><strong>WO44</strong></td><td>Total Lease Fees & Make Readies</td><td><span class="section-badge section-expenses">Expenses</span></td><td class="tests-cell">902</td><td class="ts"><code>2c6816b</code></td><td class="ts">May 22, 8:10 AM</td></tr>
+        <tr><td><strong>WO44</strong></td><td>Total Lease Fees &amp; Make Readies</td><td><span class="section-badge section-expenses">Expenses</span></td><td class="tests-cell">902</td><td class="ts"><code>2c6816b</code></td><td class="ts">May 22, 8:10 AM</td></tr>
         <tr><td><strong>WO43</strong></td><td>Total Apartment Turn Costs</td><td><span class="section-badge section-output">Output</span></td><td class="tests-cell">869</td><td class="ts"><code>46ce9c1</code></td><td class="ts">May 21, 10:28 PM</td></tr>
         <tr><td><strong>WO42</strong></td><td>Make Ready Appliances</td><td><span class="section-badge section-output">Output</span></td><td class="tests-cell">838</td><td class="ts"><code>a51efa9</code></td><td class="ts">May 21, 9:36 PM</td></tr>
         <tr><td><strong>WO41</strong></td><td>Make Ready Cleaning</td><td><span class="section-badge section-output">Output</span></td><td class="tests-cell">809</td><td class="ts"><code>5c24f39</code></td><td class="ts">May 21, 8:46 PM</td></tr>
         <tr><td><strong>WO40</strong></td><td>Make Ready Materials</td><td><span class="section-badge section-output">Output</span></td><td class="tests-cell">780</td><td class="ts"><code>7e86af5</code></td><td class="ts">May 21, 8:16 PM</td></tr>
         <tr><td><strong>WO39</strong></td><td>Make Ready Labor</td><td><span class="section-badge section-output">Output</span></td><td class="tests-cell">749</td><td class="ts"><code>297b8d5</code></td><td class="ts">May 21, 7:41 PM</td></tr>
         <tr><td><strong>WO38</strong></td><td>Lease Fees / Commissions</td><td><span class="section-badge section-expenses">Expenses</span></td><td class="tests-cell">718</td><td class="ts"><code>828f13a</code></td><td class="ts">May 21, 6:41 PM</td></tr>
-        <tr><td><strong>WO37</strong></td><td>Total Repairs & Maintenance</td><td><span class="section-badge section-expenses">Expenses</span></td><td class="tests-cell">694</td><td class="ts"><code>a25a0d8</code></td><td class="ts">May 21, 5:40 PM</td></tr>
+        <tr><td><strong>WO37</strong></td><td>Total Repairs &amp; Maintenance</td><td><span class="section-badge section-expenses">Expenses</span></td><td class="tests-cell">694</td><td class="ts"><code>a25a0d8</code></td><td class="ts">May 21, 5:40 PM</td></tr>
         <tr><td><strong>WO36</strong></td><td>Other Maintenance</td><td><span class="section-badge section-expenses">Expenses</span></td><td class="tests-cell">663</td><td class="ts"><code>0e6c4ab</code></td><td class="ts">May 21, 12:53 PM</td></tr>
         <tr><td><strong>WO35</strong></td><td>Landscaping/Pest/Grounds</td><td><span class="section-badge section-output">Output</span></td><td class="tests-cell">633</td><td class="ts"><code>63ae1f1</code></td><td class="ts">May 21, 12:08 PM</td></tr>
         <tr><td><strong>WO34</strong></td><td>Life Safety</td><td><span class="section-badge section-output">Output</span></td><td class="tests-cell">603</td><td class="ts"><code>14ac238</code></td><td class="ts">May 21, 11:37 AM</td></tr>
@@ -263,18 +328,18 @@
         <tr><td><strong>WO31</strong></td><td>Third Party Repairs</td><td><span class="section-badge section-expenses">Expenses</span></td><td class="tests-cell">514</td><td class="ts"><code>01cbc35</code></td><td class="ts">May 21, 9:20 AM</td></tr>
         <tr><td><strong>WO30</strong></td><td>Training / Overhead</td><td><span class="section-badge section-output">Output</span></td><td class="tests-cell">485</td><td class="ts"><code>7675e5a</code></td><td class="ts">May 21, 8:50 AM</td></tr>
         <tr><td><strong>WO29</strong></td><td>Vehicle / Fuel</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">452</td><td class="ts"><code>ade0b14</code></td><td class="ts">May 21, 8:09 AM</td></tr>
-        <tr><td><strong>WO28</strong></td><td>Tools & Equipment</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">419</td><td class="ts"><code>0743bf2</code></td><td class="ts">May 21, 6:39 AM</td></tr>
+        <tr><td><strong>WO28</strong></td><td>Tools &amp; Equipment</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">419</td><td class="ts"><code>0743bf2</code></td><td class="ts">May 21, 6:39 AM</td></tr>
         <tr><td><strong>WO27</strong></td><td>In-House Labor</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">385</td><td class="ts"><code>613f99c</code></td><td class="ts">May 21, 5:47 AM</td></tr>
         <tr><td><strong>WO26</strong></td><td>In-House</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">352</td><td class="ts"><code>bfe8ee0</code></td><td class="ts">May 21, 5:00 AM</td></tr>
         <tr><td><strong>WO25</strong></td><td>In-House</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">319</td><td class="ts"><code>69d4e89</code></td><td class="ts">May 21, 4:21 AM</td></tr>
         <tr><td><strong>WO24</strong></td><td>In-House</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">287</td><td class="ts"><code>ca34a6a</code></td><td class="ts">May 21, 3:30 AM</td></tr>
         <tr><td><strong>WO23</strong></td><td>In-House</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>8c8610b</code></td><td class="ts">May 21, 2:38 AM</td></tr>
-        <tr><td><strong>WO22</strong></td><td>Total Admin & Marketing</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>c2d18fd</code></td><td class="ts">May 21, 1:37 AM</td></tr>
+        <tr><td><strong>WO22</strong></td><td>Total Admin &amp; Marketing</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>c2d18fd</code></td><td class="ts">May 21, 1:37 AM</td></tr>
         <tr><td><strong>WO21</strong></td><td>Marketing - Other</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>79104cb</code></td><td class="ts">May 21, 1:07 AM</td></tr>
         <tr><td><strong>WO20</strong></td><td>Marketing - Zillow</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>cfb798a</code></td><td class="ts">May 21, 12:27 AM</td></tr>
         <tr><td><strong>WO19</strong></td><td>Marketing - Apartments.com</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>6725505</code></td><td class="ts">May 20, 11:56 PM</td></tr>
         <tr><td><strong>WO18</strong></td><td>Utility Billing Service</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>6c3d1f3</code></td><td class="ts">May 20, 11:26 PM</td></tr>
-        <tr><td><strong>WO17</strong></td><td>Licenses & Permits</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>9d5df52</code></td><td class="ts">May 20, 10:53 PM</td></tr>
+        <tr><td><strong>WO17</strong></td><td>Licenses &amp; Permits</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>9d5df52</code></td><td class="ts">May 20, 10:53 PM</td></tr>
         <tr><td><strong>WO16</strong></td><td>Office / Internet / Phone</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>c739c6b</code></td><td class="ts">May 20, 10:26 PM</td></tr>
         <tr><td><strong>WO14</strong></td><td>Professional Fees</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>5ab18b2</code></td><td class="ts">May 20, 9:29 PM</td></tr>
         <tr><td><strong>WO13</strong></td><td>Legal / Evictions</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>f6821f0</code></td><td class="ts">May 20, 9:11 PM</td></tr>
@@ -293,8 +358,40 @@
 </div>
 
 <footer>
-  Page generated May 23, 6:13 AM CDT. Source workflow at github.com/nepomo/fitz-tracker. Underlying repo private. Short commit hashes are intentionally exposed.
+  Page generated May 23, 7:50 AM CDT. Source workflow at github.com/nepomo/fitz-tracker. Underlying repo private. Short commit hashes are intentionally exposed.
 </footer>
+
+</div>
+
+<script>
+(function() {
+  const PW_HASH = "8b4550223ed8e3a4c26dbc50b76007e4ca86eb9842d995f8f6820080507073fa";
+  async function sha256(s) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+  function reveal() {
+    document.getElementById('gate').style.display = 'none';
+    const c = document.getElementById('content');
+    c.hidden = false;
+  }
+  if (sessionStorage.getItem('fitz-tracker-ok') === 'yes') {
+    reveal();
+  }
+  document.getElementById('gateForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const entered = document.getElementById('pw').value;
+    const hash = await sha256(entered);
+    if (hash === PW_HASH) {
+      sessionStorage.setItem('fitz-tracker-ok', 'yes');
+      reveal();
+    } else {
+      document.getElementById('gate-err').style.display = 'block';
+      document.getElementById('pw').value = '';
+    }
+  });
+})();
+</script>
 
 </body>
 </html>
