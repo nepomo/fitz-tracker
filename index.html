@@ -52,6 +52,26 @@
   .progress-bar { height: 8px; background: rgba(255,255,255,0.05); border-radius: 999px; overflow: hidden; }
   .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 50%, var(--accent-3) 100%); border-radius: 999px; box-shadow: 0 0 12px rgba(96,165,250,0.4); }
 
+  /* Milestones */
+  .milestones { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; margin-bottom: 24px; }
+  .milestones h2 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin: 0 0 4px; }
+  .milestones .lead { color: var(--muted); font-size: 13px; margin-bottom: 14px; }
+  .milestones .lead strong { color: var(--text); font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+  .milestone { padding: 12px 0; border-top: 1px solid var(--border); }
+  .milestone:first-of-type { border-top: 0; padding-top: 0; }
+  .milestone-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 4px; }
+  .milestone-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .milestone-badge { padding: 3px 10px; border-radius: 999px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; flex-shrink: 0; }
+  .badge-done { background: rgba(74,222,128,0.18); color: var(--accent); }
+  .badge-in_progress { background: rgba(96,165,250,0.18); color: var(--accent-2); }
+  .badge-pending { background: rgba(139,148,166,0.15); color: var(--muted); }
+  .badge-blocked { background: rgba(248,113,113,0.18); color: var(--bad); }
+  .milestone-desc { color: var(--muted); font-size: 12px; line-height: 1.5; margin-bottom: 4px; }
+  .milestone-sub { color: var(--muted); font-size: 11px; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+  .milestone-sub code { background: rgba(255,255,255,0.06); padding: 1px 5px; border-radius: 3px; }
+  .milestone.milestone-done .milestone-name { color: var(--accent); }
+  .milestone.milestone-in_progress { background: rgba(96,165,250,0.04); border-radius: 6px; padding-left: 12px; padding-right: 12px; }
+
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
   @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
   .card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
@@ -142,6 +162,23 @@
   </div>
 </div>
 
+<div class="milestones">
+  <h2>Correction plan progress</h2>
+  <div class="lead"><strong>2</strong> of 9 stages complete · 22.2%</div>
+  <div class="progress-bar" style="margin-bottom: 16px;">
+    <div class="progress-fill" style="width: 22.2%"></div>
+  </div>
+      <div class="milestone milestone-done"><div class="milestone-row"><div class="milestone-name">Stage 1 — Orchestrator hardening</div><span class="milestone-badge badge-done">Done</span></div><div class="milestone-desc">Fix the 9 defects the two RED audits found in the autonomous orchestrator. Add multi-shot mode for true set-and-forget.</div><div class="milestone-sub">Completed May 23, 9:42 AM · <code>499b7c2</code></div></div>
+      <div class="milestone milestone-done"><div class="milestone-row"><div class="milestone-name">Stage 2 — Integration shell</div><span class="milestone-badge badge-done">Done</span></div><div class="milestone-desc">Build the registry, leaf-input layer, engine contract, orchestrator, cycle detector. Refactor Management Fee as round-trip proof.</div><div class="milestone-sub">Completed May 23, 1:37 PM · <code>144915d</code></div></div>
+      <div class="milestone milestone-pending"><div class="milestone-row"><div class="milestone-name">Stage 3a — Engine migration: trivial bucket</div><span class="milestone-badge badge-pending">Pending</span></div><div class="milestone-desc">Refactor 30 trivial-bucket engines to the new contract (adapter-only work, ~15-30 min each).</div><div class="milestone-sub">0 of 30</div></div>
+      <div class="milestone milestone-pending"><div class="milestone-row"><div class="milestone-name">Stage 3b — Engine migration: moderate bucket</div><span class="milestone-badge badge-pending">Pending</span></div><div class="milestone-desc">Refactor 12 moderate-bucket engines (formula rewire, ~45-90 min each).</div><div class="milestone-sub">0 of 12</div></div>
+      <div class="milestone milestone-pending"><div class="milestone-row"><div class="milestone-name">Stage 3c — Engine migration: broad-family bucket</div><span class="milestone-badge badge-pending">Pending</span></div><div class="milestone-desc">Refactor 9 broad-family engines that likely need to be split into components (~2-4 hours each).</div><div class="milestone-sub">0 of 9</div></div>
+      <div class="milestone milestone-pending"><div class="milestone-row"><div class="milestone-name">Stage 3d — Complete Operating Statement</div><span class="milestone-badge badge-pending">Pending</span></div><div class="milestone-desc">Implement the remaining ~21 Operating Statement rows under the new contract (Gas, Waste/Dumpster, Recycling, Taxes &amp; Fees, Total Insurance, Property Taxes, Tax Protest Fee, Total Taxes, and the rest through to NOI).</div><div class="milestone-sub">0 of 21</div></div>
+      <div class="milestone milestone-pending"><div class="milestone-row"><div class="milestone-name">Stage 4 — Cycle resolution</div><span class="milestone-badge badge-pending">Pending</span></div><div class="milestone-desc">Implement Cash Flow ↔ Distributions decoupling. Codex&#x27;s investigation recommends period-sequence decoupling (not an iterative solver).</div></div>
+      <div class="milestone milestone-pending"><div class="milestone-row"><div class="milestone-name">Stage 5 — Missing families</div><span class="milestone-badge badge-pending">Pending</span></div><div class="milestone-desc">Build Cash Flow, Dashboard, Distributions, Debt, Vacancy, Concessions families in the new contract. ~770 canonical outputs across 6 families currently at 0% coverage.</div></div>
+      <div class="milestone milestone-pending"><div class="milestone-row"><div class="milestone-name">Stage 6 — Full-model round-trip</div><span class="milestone-badge badge-pending">Pending</span></div><div class="milestone-desc">Round-trip test that changes a base assumption (e.g., a leaf rent input) and verifies the entire model updates correctly end to end. The proof that the rebuild is a real model, not a verification harness.</div></div>
+</div>
+
 <div class="grid">
 
   <div class="card last-close">
@@ -187,7 +224,7 @@
     <span class="pill pill-idle">no kickoff queued</span>
   </div>
   <div class="meta" style="margin-top: 12px;">
-    Next scheduled firing: May 23, 6:13 PM CDT (~6.0h) (launchd, four times daily at 12:13 AM, 6:13 AM, 12:13 PM, 6:13 PM Central)
+    Next scheduled firing: May 23, 6:13 PM CDT (~1.7h) (launchd, four times daily at 12:13 AM, 6:13 AM, 12:13 PM, 6:13 PM Central)
   </div>
 </div>
 
@@ -363,7 +400,7 @@
 </div>
 
 <footer>
-  Page generated May 23, 12:13 PM CDT. Source workflow at github.com/nepomo/fitz-tracker. Underlying repo private. Short commit hashes are intentionally exposed.
+  Page generated May 23, 4:32 PM CDT. Source workflow at github.com/nepomo/fitz-tracker. Underlying repo private. Short commit hashes are intentionally exposed.
 </footer>
 
 </div>
