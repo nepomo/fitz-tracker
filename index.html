@@ -57,6 +57,16 @@
   .engines td { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px; }
   .engines td:first-child { font-family: inherit; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
   .engine-tool { color: var(--muted); font-size: 11px; }
+  .all-closes-wrap { max-height: 480px; overflow-y: auto; overflow-x: auto; }
+  .all-closes-wrap table { min-width: 560px; }
+  .all-closes-wrap thead th { position: sticky; top: 0; background: var(--panel); z-index: 1; }
+  .all-closes-wrap td { white-space: nowrap; }
+  .tests-cell { font-family: ui-monospace, "SF Mono", Menlo, monospace; color: var(--muted); font-size: 12px; }
+  .section-badge { padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; }
+  .section-output { background: rgba(74,222,128,0.18); color: var(--accent); }
+  .section-expenses { background: rgba(251,191,36,0.18); color: var(--warn); }
+  .section-operations { background: rgba(96,165,250,0.18); color: var(--info); }
+  .section-unknown { background: rgba(139,148,166,0.15); color: var(--muted); }
   footer { color: var(--muted); font-size: 11px; padding-top: 24px; border-top: 1px solid var(--border); margin-top: 24px; }
 </style>
 </head>
@@ -112,7 +122,7 @@
     <span class="pill pill-idle">no kickoff queued</span>
   </div>
   <div class="meta" style="margin-top: 12px;">
-    Next scheduled firing: May 23, 12:13 AM CDT (~3.2h) (launchd, four times daily at 12:13 AM, 6:13 AM, 12:13 PM, 6:13 PM Central)
+    Next scheduled firing: May 23, 12:13 AM CDT (~2.7h) (launchd, four times daily at 12:13 AM, 6:13 AM, 12:13 PM, 6:13 PM Central)
   </div>
 </div>
 
@@ -200,8 +210,80 @@
   </table>
 </div>
 
+<div class="card" style="margin-top: 24px;">
+  <h2>All closes (49 WOs · WO3 onwards)</h2>
+  <div class="meta" style="margin-bottom: 10px;">
+    Newest first. Each row is one close commit on <code>main</code>. WO1 and WO2 were the initial validation-harness commit (no separate close).
+  </div>
+  <div class="all-closes-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>WO</th>
+          <th>Family</th>
+          <th>Section</th>
+          <th>Tests</th>
+          <th>Commit</th>
+          <th>Closed</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>WO53</strong></td><td>Business Interruption</td><td><span class="section-badge section-output">Output</span></td><td class="tests-cell">1167</td><td class="ts"><code>4757f82</code></td><td class="ts">May 22, 8:11 PM</td></tr>
+        <tr><td><strong>WO52</strong></td><td>Umbrella / Excess</td><td><span class="section-badge section-output">Output</span></td><td class="tests-cell">1140</td><td class="ts"><code>b7e1684</code></td><td class="ts">May 22, 6:26 PM</td></tr>
+        <tr><td><strong>WO51</strong></td><td>General Liability</td><td><span class="section-badge section-output">Output</span></td><td class="tests-cell">1113</td><td class="ts"><code>5851980</code></td><td class="ts">May 22, 3:58 PM</td></tr>
+        <tr><td><strong>WO50</strong></td><td>Property Insurance</td><td><span class="section-badge section-expenses">Expenses</span></td><td class="tests-cell">1086</td><td class="ts"><code>a82c8d7</code></td><td class="ts">May 22, 3:26 PM</td></tr>
+        <tr><td><strong>WO49</strong></td><td>Total Utilities aggregate</td><td><span class="section-badge section-expenses">Expenses</span></td><td class="tests-cell">1059</td><td class="ts"><code>a7e8811</code></td><td class="ts">May 22, 2:47 PM</td></tr>
+        <tr><td><strong>WO48</strong></td><td>Water - Tenant/Vacant</td><td><span class="section-badge section-operations">Operations</span></td><td class="tests-cell">1028</td><td class="ts"><code>9264d63</code></td><td class="ts">May 22, 2:00 PM</td></tr>
+        <tr><td><strong>WO47</strong></td><td>Water - House</td><td><span class="section-badge section-output">Output</span></td><td class="tests-cell">996</td><td class="ts"><code>46ecbc0</code></td><td class="ts">May 22, 1:15 PM</td></tr>
+        <tr><td><strong>WO46</strong></td><td>Electric - Tenant/Vacant</td><td><span class="section-badge section-operations">Operations</span></td><td class="tests-cell">964</td><td class="ts"><code>cfb8b79</code></td><td class="ts">May 22, 12:29 PM</td></tr>
+        <tr><td><strong>WO45</strong></td><td>Electric - House</td><td><span class="section-badge section-output">Output</span></td><td class="tests-cell">933</td><td class="ts"><code>8d6beeb</code></td><td class="ts">May 22, 9:53 AM</td></tr>
+        <tr><td><strong>WO44</strong></td><td>Total Lease Fees & Make Readies</td><td><span class="section-badge section-expenses">Expenses</span></td><td class="tests-cell">902</td><td class="ts"><code>2c6816b</code></td><td class="ts">May 22, 8:10 AM</td></tr>
+        <tr><td><strong>WO43</strong></td><td>Total Apartment Turn Costs</td><td><span class="section-badge section-output">Output</span></td><td class="tests-cell">869</td><td class="ts"><code>46ce9c1</code></td><td class="ts">May 21, 10:28 PM</td></tr>
+        <tr><td><strong>WO42</strong></td><td>Make Ready Appliances</td><td><span class="section-badge section-output">Output</span></td><td class="tests-cell">838</td><td class="ts"><code>a51efa9</code></td><td class="ts">May 21, 9:36 PM</td></tr>
+        <tr><td><strong>WO41</strong></td><td>Make Ready Cleaning</td><td><span class="section-badge section-output">Output</span></td><td class="tests-cell">809</td><td class="ts"><code>5c24f39</code></td><td class="ts">May 21, 8:46 PM</td></tr>
+        <tr><td><strong>WO40</strong></td><td>Make Ready Materials</td><td><span class="section-badge section-output">Output</span></td><td class="tests-cell">780</td><td class="ts"><code>7e86af5</code></td><td class="ts">May 21, 8:16 PM</td></tr>
+        <tr><td><strong>WO39</strong></td><td>Make Ready Labor</td><td><span class="section-badge section-output">Output</span></td><td class="tests-cell">749</td><td class="ts"><code>297b8d5</code></td><td class="ts">May 21, 7:41 PM</td></tr>
+        <tr><td><strong>WO38</strong></td><td>Lease Fees / Commissions</td><td><span class="section-badge section-expenses">Expenses</span></td><td class="tests-cell">718</td><td class="ts"><code>828f13a</code></td><td class="ts">May 21, 6:41 PM</td></tr>
+        <tr><td><strong>WO37</strong></td><td>Total Repairs & Maintenance</td><td><span class="section-badge section-expenses">Expenses</span></td><td class="tests-cell">694</td><td class="ts"><code>a25a0d8</code></td><td class="ts">May 21, 5:40 PM</td></tr>
+        <tr><td><strong>WO36</strong></td><td>Other Maintenance</td><td><span class="section-badge section-expenses">Expenses</span></td><td class="tests-cell">663</td><td class="ts"><code>0e6c4ab</code></td><td class="ts">May 21, 12:53 PM</td></tr>
+        <tr><td><strong>WO35</strong></td><td>Landscaping/Pest/Grounds</td><td><span class="section-badge section-output">Output</span></td><td class="tests-cell">633</td><td class="ts"><code>63ae1f1</code></td><td class="ts">May 21, 12:08 PM</td></tr>
+        <tr><td><strong>WO34</strong></td><td>Life Safety</td><td><span class="section-badge section-output">Output</span></td><td class="tests-cell">603</td><td class="ts"><code>14ac238</code></td><td class="ts">May 21, 11:37 AM</td></tr>
+        <tr><td><strong>WO33</strong></td><td>Pool</td><td><span class="section-badge section-output">Output</span></td><td class="tests-cell">573</td><td class="ts"><code>8a5d9f8</code></td><td class="ts">May 21, 11:04 AM</td></tr>
+        <tr><td><strong>WO32</strong></td><td>Mechanical Maintenance</td><td><span class="section-badge section-expenses">Expenses</span></td><td class="tests-cell">543</td><td class="ts"><code>6f6be23</code></td><td class="ts">May 21, 10:04 AM</td></tr>
+        <tr><td><strong>WO31</strong></td><td>Third Party Repairs</td><td><span class="section-badge section-expenses">Expenses</span></td><td class="tests-cell">514</td><td class="ts"><code>01cbc35</code></td><td class="ts">May 21, 9:20 AM</td></tr>
+        <tr><td><strong>WO30</strong></td><td>Training / Overhead</td><td><span class="section-badge section-output">Output</span></td><td class="tests-cell">485</td><td class="ts"><code>7675e5a</code></td><td class="ts">May 21, 8:50 AM</td></tr>
+        <tr><td><strong>WO29</strong></td><td>Vehicle / Fuel</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">452</td><td class="ts"><code>ade0b14</code></td><td class="ts">May 21, 8:09 AM</td></tr>
+        <tr><td><strong>WO28</strong></td><td>Tools & Equipment</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">419</td><td class="ts"><code>0743bf2</code></td><td class="ts">May 21, 6:39 AM</td></tr>
+        <tr><td><strong>WO27</strong></td><td>In-House Labor</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">385</td><td class="ts"><code>613f99c</code></td><td class="ts">May 21, 5:47 AM</td></tr>
+        <tr><td><strong>WO26</strong></td><td>In-House</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">352</td><td class="ts"><code>bfe8ee0</code></td><td class="ts">May 21, 5:00 AM</td></tr>
+        <tr><td><strong>WO25</strong></td><td>In-House</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">319</td><td class="ts"><code>69d4e89</code></td><td class="ts">May 21, 4:21 AM</td></tr>
+        <tr><td><strong>WO24</strong></td><td>In-House</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">287</td><td class="ts"><code>ca34a6a</code></td><td class="ts">May 21, 3:30 AM</td></tr>
+        <tr><td><strong>WO23</strong></td><td>In-House</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>8c8610b</code></td><td class="ts">May 21, 2:38 AM</td></tr>
+        <tr><td><strong>WO22</strong></td><td>Total Admin & Marketing</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>c2d18fd</code></td><td class="ts">May 21, 1:37 AM</td></tr>
+        <tr><td><strong>WO21</strong></td><td>Marketing - Other</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>79104cb</code></td><td class="ts">May 21, 1:07 AM</td></tr>
+        <tr><td><strong>WO20</strong></td><td>Marketing - Zillow</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>cfb798a</code></td><td class="ts">May 21, 12:27 AM</td></tr>
+        <tr><td><strong>WO19</strong></td><td>Marketing - Apartments.com</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>6725505</code></td><td class="ts">May 20, 11:56 PM</td></tr>
+        <tr><td><strong>WO18</strong></td><td>Utility Billing Service</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>6c3d1f3</code></td><td class="ts">May 20, 11:26 PM</td></tr>
+        <tr><td><strong>WO17</strong></td><td>Licenses & Permits</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>9d5df52</code></td><td class="ts">May 20, 10:53 PM</td></tr>
+        <tr><td><strong>WO16</strong></td><td>Office / Internet / Phone</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>c739c6b</code></td><td class="ts">May 20, 10:26 PM</td></tr>
+        <tr><td><strong>WO14</strong></td><td>Professional Fees</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>5ab18b2</code></td><td class="ts">May 20, 9:29 PM</td></tr>
+        <tr><td><strong>WO13</strong></td><td>Legal / Evictions</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>f6821f0</code></td><td class="ts">May 20, 9:11 PM</td></tr>
+        <tr><td><strong>WO12</strong></td><td>Management Fee</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>9573e20</code></td><td class="ts">May 20, 8:45 PM</td></tr>
+        <tr><td><strong>WO11</strong></td><td>(see commit)</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>4d9a151</code></td><td class="ts">May 20, 8:23 PM</td></tr>
+        <tr><td><strong>WO9</strong></td><td>Insurance</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>2452187</code></td><td class="ts">May 20, 6:48 PM</td></tr>
+        <tr><td><strong>WO8</strong></td><td>Utilities</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>fa99e65</code></td><td class="ts">May 20, 6:21 PM</td></tr>
+        <tr><td><strong>WO7</strong></td><td>Repair and Maintenance</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>052f6c9</code></td><td class="ts">May 20, 5:59 PM</td></tr>
+        <tr><td><strong>WO6</strong></td><td>Administrative / Marketing</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>414d265</code></td><td class="ts">May 20, 5:46 PM</td></tr>
+        <tr><td><strong>WO5</strong></td><td>Payroll</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>4b18bbf</code></td><td class="ts">May 20, 5:35 PM</td></tr>
+        <tr><td><strong>WO4</strong></td><td>Reimbursement Income</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>f7cb921</code></td><td class="ts">May 20, 5:19 PM</td></tr>
+        <tr><td><strong>WO3</strong></td><td>(see commit)</td><td><span class="section-badge section-unknown">?</span></td><td class="tests-cell">?</td><td class="ts"><code>182162b</code></td><td class="ts">May 20, 1:04 PM</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
 <footer>
-  Page generated May 22, 8:58 PM CDT. Source workflow at github.com/nepomo/fitz-tracker. Underlying repo private.
+  Page generated May 22, 9:30 PM CDT. Source workflow at github.com/nepomo/fitz-tracker. Underlying repo private. Short commit hashes are intentionally exposed.
 </footer>
 
 </body>
