@@ -54,6 +54,9 @@
   .badge-cap_reached { background: rgba(251,191,36,0.18); color: var(--warn); }
   .badge-failed { background: rgba(248,113,113,0.18); color: var(--bad); }
   .badge-paused { background: rgba(96,165,250,0.18); color: var(--info); }
+  .engines td { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px; }
+  .engines td:first-child { font-family: inherit; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .engine-tool { color: var(--muted); font-size: 11px; }
   footer { color: var(--muted); font-size: 11px; padding-top: 24px; border-top: 1px solid var(--border); margin-top: 24px; }
 </style>
 </head>
@@ -109,8 +112,42 @@
     <span class="pill pill-idle">no kickoff queued</span>
   </div>
   <div class="meta" style="margin-top: 12px;">
-    Next scheduled firing: 00:13 CDT (~3.6h) (launchd, 00:13 / 06:13 / 12:13 / 18:13 local)
+    Next scheduled firing: 00:13 CDT (~3.3h) (launchd, 00:13 / 06:13 / 12:13 / 18:13 local)
   </div>
+</div>
+
+<div class="card engines" style="margin-bottom: 24px;">
+  <h2>Engines (current config)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Phase</th>
+        <th>Tool</th>
+        <th>Model</th>
+        <th>Reasoning</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Kickoff</td>
+        <td><span class="engine-tool">codex exec</span></td>
+        <td>gpt-5.5</td>
+        <td>xhigh</td>
+      </tr>
+      <tr>
+        <td>Verifier</td>
+        <td><span class="engine-tool">claude -p</span></td>
+        <td>opus</td>
+        <td>max</td>
+      </tr>
+      <tr>
+        <td>Closer</td>
+        <td><span class="engine-tool">claude -p</span></td>
+        <td>opus</td>
+        <td>max</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
 <div class="card">
@@ -164,7 +201,7 @@
 </div>
 
 <footer>
-  Page generated 2026-05-23T01:37:47Z. Source workflow at github.com/nepomo/fitz-tracker. Underlying repo private.
+  Page generated 2026-05-23T01:56:07Z. Source workflow at github.com/nepomo/fitz-tracker. Underlying repo private.
 </footer>
 
 </body>
