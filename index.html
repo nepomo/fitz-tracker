@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fitz Excel Rebuild — Autonomous Tracker</title>
+<meta http-equiv="refresh" content="300">
+<style>
+  :root {
+    --bg: #0f1115;
+    --panel: #161a22;
+    --border: #2a2f3a;
+    --text: #e8eaed;
+    --muted: #8b94a6;
+    --accent: #4ade80;
+    --warn: #fbbf24;
+    --bad: #f87171;
+    --info: #60a5fa;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  body { padding: 24px; max-width: 920px; margin: 0 auto; }
+  header { padding-bottom: 16px; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+  h1 { margin: 0 0 6px; font-size: 22px; font-weight: 600; }
+  .subtitle { color: var(--muted); font-size: 13px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+  .card h2 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin: 0 0 12px; }
+  .big { font-size: 28px; font-weight: 600; line-height: 1.1; margin-bottom: 6px; }
+  .meta { color: var(--muted); font-size: 13px; line-height: 1.5; }
+  .meta code { background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 4px; font-size: 12px; }
+  .stats { display: flex; gap: 24px; margin: 8px 0 16px; }
+  .stat { flex: 1; }
+  .stat .num { font-size: 22px; font-weight: 600; }
+  .stat .lbl { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  .pill { padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .pill-ok { background: rgba(74,222,128,0.15); color: var(--accent); }
+  .pill-idle { background: rgba(139,148,166,0.15); color: var(--muted); }
+  .pill-armed { background: rgba(251,191,36,0.18); color: var(--warn); }
+  .pill-paused { background: rgba(248,113,113,0.18); color: var(--bad); }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 8px 10px; text-align: left; font-size: 13px; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+  td.ts { color: var(--muted); font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px; }
+  td.details { color: var(--muted); font-size: 12px; }
+  td.empty { color: var(--muted); font-style: italic; padding: 16px; }
+  .badge { padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+  .badge-closed { background: rgba(74,222,128,0.18); color: var(--accent); }
+  .badge-no_op { background: rgba(139,148,166,0.15); color: var(--muted); }
+  .badge-verifier_block { background: rgba(248,113,113,0.18); color: var(--bad); }
+  .badge-dirty_tree { background: rgba(251,191,36,0.18); color: var(--warn); }
+  .badge-cap_reached { background: rgba(251,191,36,0.18); color: var(--warn); }
+  .badge-failed { background: rgba(248,113,113,0.18); color: var(--bad); }
+  .badge-paused { background: rgba(96,165,250,0.18); color: var(--info); }
+  footer { color: var(--muted); font-size: 11px; padding-top: 24px; border-top: 1px solid var(--border); margin-top: 24px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Fitz Excel Rebuild — Autonomous Tracker</h1>
+  <div class="subtitle">Headless WO orchestrator. Updated after each cron firing. Auto-refresh every 5 min.</div>
+</header>
+
+<div class="grid">
+
+  <div class="card">
+    <h2>Last close</h2>
+    <div class="big">WO 53</div>
+    <div class="meta">
+      Business Interruption<br>
+      <code>4757f82</code> · 2026-05-22T20:11:49-05:00<br>
+      1167 main-suite tests passing
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Next target (pre-pinned)</h2>
+    <div class="big">WO 54</div>
+    <div class="meta">
+      Taxes & Fees (Insurance)<br>
+      Row 92 · Section Expenses<br>
+      <code>MAP_0970</code> through <code>MAP_0973</code>
+    </div>
+  </div>
+
+</div>
+
+<div class="card" style="margin-bottom: 24px;">
+  <h2>State</h2>
+  <div class="stats">
+    <div class="stat">
+      <div class="num">49</div>
+      <div class="lbl">WOs closed</div>
+    </div>
+    <div class="stat">
+      <div class="num">53</div>
+      <div class="lbl">Cap (MAX_AUTONOMOUS_WO)</div>
+    </div>
+    <div class="stat">
+      <div class="num">1167</div>
+      <div class="lbl">Tests passing</div>
+    </div>
+  </div>
+  <div class="pills">
+    <span class="pill pill-ok">resumed</span>
+    <span class="pill pill-idle">no kickoff queued</span>
+  </div>
+  <div class="meta" style="margin-top: 12px;">
+    Next scheduled firing: 00:13 CDT (~3.6h) (launchd, 00:13 / 06:13 / 12:13 / 18:13 local)
+  </div>
+</div>
+
+<div class="card">
+  <h2>Recent firings (last 10)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Time (UTC)</th>
+        <th>Outcome</th>
+        <th>Detail</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="ts">2026-05-22T23:46Z</td>
+          <td><span class="badge badge-a">A</span></td>
+          <td class="details">(nothing to do; HEAD b7e1684 WO52; no new Codex work)</td>
+        </tr>
+        <tr>
+          <td class="ts">2026-05-23T00:11:26Z</td>
+          <td><span class="badge badge-no_op">NO_OP</span></td>
+          <td class="details">(nothing to do (last=52, next=53))</td>
+        </tr>
+        <tr>
+          <td class="ts">2026-05-23T00:26:09Z</td>
+          <td><span class="badge badge-no_op">NO_OP</span></td>
+          <td class="details">(nothing to do (last=52, next=53))</td>
+        </tr>
+        <tr>
+          <td class="ts">2026-05-23T00:28:00Z</td>
+          <td><span class="badge badge-no_op">NO_OP</span></td>
+          <td class="details">(nothing to do (last=52, next=53))</td>
+        </tr>
+        <tr>
+          <td class="ts">2026-05-23T00:40:21Z</td>
+          <td><span class="badge badge-no_op">NO_OP</span></td>
+          <td class="details">(nothing to do (last=52, next=53))</td>
+        </tr>
+        <tr>
+          <td class="ts">2026-05-23T01:11:54Z</td>
+          <td><span class="badge badge-closed">CLOSED</span></td>
+          <td class="details">(WO53 at 4757f82)</td>
+        </tr>
+    </tbody>
+  </table>
+</div>
+
+<footer>
+  Page generated 2026-05-23T01:37:15Z. Source workflow at github.com/nepomo/fitz-tracker. Underlying repo private.
+</footer>
+
+</body>
+</html>
